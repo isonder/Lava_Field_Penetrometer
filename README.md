@@ -10,7 +10,7 @@ Additional files include:
 “Force_guage_test_code.py” used for troubleshooting force gauge.
 “Instructions to get code to run on boot.txt” 
 
-
+-------------------------------------------------------------------------------------------------------------
 Files used to  process data for the lava penetrometer are found within Files For Data Processing 
 
 Instructions:
@@ -20,3 +20,7 @@ Next, you will execute the "First_selection.py" for the desired penetrometer .tx
 Next, you can run the "Second_selection.py" file and in the pop-up window, you will select the selected_dat.txt file instead of the original penetrometer .txt file. You will then go through another round of data selection with the mouse. When you close this window, you it saves the data as selected_dat.txt again.
 
 Lastly, you can run the "Process_selected_data.py" and in the pop-up window, select the selected_dat.txt file. This will produce a seires of plots that can be commented on or off as desired, and a .csv file that contains the calibrated viscosity values. 
+-------------------------------------------------------------------------------------------------
+Files for custom built machined parts can be found within the Penetrometer_parts folder
+Within the folder your will find complete 'Assembly' images and individual PDFs for each piece with their specifications. 
+These can be used to replicate the precise pieces used in the penetrometer device or to modify as the builder see's fit.
