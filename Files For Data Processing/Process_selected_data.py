@@ -117,11 +117,10 @@ def moving_average(data, window_size):
 
 #window_size=len(df)
 window_size=4
-ldf=len(df)
-l2=2
+
 Favg = moving_average(F, window_size)
-Davg = moving_average(D, l2)
-tavg = moving_average(t, l2)
+Davg = moving_average(D, window_size)
+tavg = moving_average(t, window_size)
 
 
 
