@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Sat Jan 20 17:09:28 2024
+Last modified on Mar 1 10:18 2024
 
 @author: Marti
 """
@@ -9,21 +10,7 @@ import numpy as np
 
 import pandas as pd
 
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Mar 15 14:10:17 2023
 
-@author: Marti
-"""
-
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Jan  3 10:08:33 2023
-
-@author: Marti
-"""
-
-# -*- coding: utf-8 -*-
 
 from tkinter import Tk
 from tkinter.filedialog import askdirectory
@@ -202,30 +189,25 @@ plt.show()
 
 
 
+diff_D = abs(np.diff(Davg, prepend=Davg[0]))
 
-diff_D = abs(np.diff(Davg))
-
-
-diff_t = np.diff(tavg)
+diff_t = np.diff(tavg, prepend=tavg[0])
 
 
-
-# Reff = 0.03825
-# Reff = Reff/2
-# #diff_D_meters = diff_D/1000
+Favg=np.array(Favg)
+tavg=np.array(tavg)
 mu = diff_D/diff_t
-mu=mu[mu != 0]
-mu=mu[mu >= 1.00e-07]
-i = len(mu)
-lenF=len(Favg)
-Diff=lenF-i
+idx = mu >= 1e-7
+mu = mu[idx]
+favg = Favg[idx]
+tavg = tavg[idx]
 
 muavg=np.nanmean(mu)
 print(muavg)
 
 
-favg=Favg[Diff:]
 
+####this section uses stokes law to calclulate viscosity######
 # Vraw=Favg/((pi_6)*(mu)*(Reff))
 
 # Vavg = Vraw.mean()
@@ -267,12 +249,8 @@ favg=Favg[Diff:]
 # print(Vconf)
 
 # Length = len(Vconf)
-
-
-
-
-
-mu=diff_D/diff_t
+###################################################################
+#######this section uses calibration procedure to calculate viscosity#################
 F_RPen = favg/mu
 print(F_RPen)
 
@@ -318,18 +296,11 @@ print(VCPen)
 meancal = np.mean(VCPen, axis=0)
 sdcal = np.std(VCPen, axis=0)
 
-# final_list = [x for x in Vraw if (x > mean - 2 * sd)]
-# final_list = [x for x in final_list if (x < mean + 2 * sd)]
-
 Vconfcal = [x for x in VCPen if (x > meancal - sdcal)]
 Vconfcal = [x for x in VCPen if (x < meancal + sdcal)]
 print(Vconfcal)
 
 Lengthcal = len(Vconfcal)
-
-
-
-
 
 Vmavgcal =moving_average(Vconfcal, window_size)
 
@@ -361,8 +332,7 @@ plt.ylabel('Viscosity Pas')
 plt.xlabel('data (n)')
   #label="Viscosity vs time ")
 plt.show()
-# plt.plot(ηcx, fit_stress_0, 'k-.', label='fit_Newtonian')
-# # plt.plot(ηcx, fit_stress, 'r-.', label='fit_Bingham')
+
 
 #plt.plot(x2cal, Vmavgcal, 'o-', color ='black', markerfacecolor = 'none', markeredgecolor = 'k' , label= 'vcal_smooth')
 plt.plot(x2cal, Vconfcal, 'o-', color ='red', markerfacecolor = 'none', markeredgecolor = 'r' , label= 'vcal_raw')
