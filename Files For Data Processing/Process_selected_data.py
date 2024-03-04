@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Sat Jan 20 17:09:28 2024
-Last modified on Mar 1 10:18 2024
+Last modified on Mar 4 10:48 2024
 
 @author: Marti
 """
@@ -80,250 +80,146 @@ F = df['Force(N)']
 D = df['Distance_mm']
 Dmet = D/1000
 D= Dmet
+t=t.to_numpy()#this is needed for the derivative later
 
-
+import warnings
 def moving_average(data, window_size):
     """
-    Calculates the moving average of a 1-dimensional array using a specified window size.
+    Calculates the moving average of a 1-dimensional array using a specified
+    window size. The window is centered around each index, and decreases at
+    the ends of the input array.
 
-    Args:
-    - data: The input 1-dimensional array.
-    - window_size: The size of the window for the moving average.
-
-    Returns:
-    - result: The array containing the moving averages.
+    Parameters
+    ----------
+    data : The input 1-dimensional array.
+    window_size : int
+        The window size. This should be an odd number. If it is even it will
+        be increased by 1 to have a symmetric window around each element.
     """
-    result = []
-    for i in range(len(data)):
-        if i < window_size - 1:
-            result.append(sum(data[:i + 1]) / (i + 1))
+    if window_size % 2 == 0:
+        warnings.warn(f"Got an even sized {window_size=}. Increasing it by 1")
+        window_size += 1
+    wh = window_size // 2  # Half window: Number of samples before/after current
+    result = np.empty_like(data)  # Return values as a numpy array, not a list
+    length = len(data)
+    for i in range(length):
+        if i < wh:  # Average over smaller interval at beginning
+            result[i] = sum(data[:2 * i + 1]) / (2 * i + 1)
+        elif length - i <= wh:    # Average over smaller interval at end
+            l = 2 * i - length + 1
+            # print(f"{i=},  {l=}")
+            result[i] = sum(data[l:]) / (length - l)
         else:
-            result.append(sum(data[i - window_size + 1:i + 1]) / window_size)
+            result[i] = sum(data[i - wh:i + wh + 1]) / window_size
     return result
 
 
 #window_size=len(df)
-window_size=4
+window_size=5
 
 Favg = moving_average(F, window_size)
 Davg = moving_average(D, window_size)
 tavg = moving_average(t, window_size)
 
 
-
-plt.plot(t, F, 'o-', color ='black', markerfacecolor = 'none', markeredgecolor = 'k' , label= 'force')
-#plt.plot(xcal, Vconfcal, 'o-', color ='red', markerfacecolor = 'none', markeredgecolor = 'r' , label= 'vcal_raw')
-plt.plot(t, Favg, 'o-', color ='green', markerfacecolor = 'none', markeredgecolor = 'g' , label= 'favg')
-plt.legend(loc="upper left")
-plt.ylabel('force')
-plt.xlabel('time')
-  #label="Viscosity vs time ")
-plt.show()
-
-plt.plot(t, D, 'o-', color ='blue', markerfacecolor = 'none', markeredgecolor = 'b' , label= 'distance')
-#plt.plot(xcal, Vconfcal, 'o-', color ='red', markerfacecolor = 'none', markeredgecolor = 'r' , label= 'vcal_raw')
-plt.plot(t, Davg, 'o-', color ='purple', markerfacecolor = 'none', markeredgecolor = 'm' , label= 'davg')
-
-
-plt.legend(loc="upper left")
-plt.ylabel('displacement')
-plt.xlabel('time')
-  #label="Viscosity vs time ")
-plt.show()
-
-plt.plot(t, tavg, 'o-', color ='purple', markerfacecolor = 'none', markeredgecolor = 'm' , label= 'davg')
-
-
-plt.legend(loc="upper left")
-plt.ylabel('tavg')
-plt.xlabel('time')
-  #label="Viscosity vs time ")
-plt.show()
-
-
-
-
-
-
-fig = plt.figure(figsize=(10, 7))
-
-#fig,axa1 = plt.subplots(figsize=(8, 6))
-axa1 = fig.add_subplot(211)
-
-p1, = axa1.plot(t, F, 'r-')
-
-#axa1.set_ylim(0, 400)
-axa1.set_title('Press left mouse button and drag to test')
-axa1.set_xlabel('time (s)', color='black')
-axa1.set_ylabel('Force (N)', color='red')
-
-axa1.tick_params(axis='y', color='red', labelcolor= 'red')
-
-
-axa2 = axa1.twinx()
-axa2.plot(t, D, 'g-')
-axa2.set_ylabel('Distance (mm)', color='green')
-axa2.grid(False)
-axa2.set_xlabel('time (s)', color='black')
-axa2.tick_params(axis='y', color='green', labelcolor= 'green')
-axa2.spines.left.set_position(("axes", 1.08))
-
-
-axb = fig.add_subplot(212)
-axb.set_xlabel('time (s)', color='black')
-axb.set_ylabel('Force (N)', color='black')
-axb1 = axb.twinx()
-axb1.set_ylabel('Distance (mm)', color='blue')
-axb1.grid(False)
-axb1.set_xlabel('time (s)', color='black')
-axb1.tick_params(axis='y', color='blue', labelcolor= 'blue')
-axb1.spines.left.set_position(("axes", 1.08))
-
-line2, = axb.plot(t, Favg, 'k-')
-line2b, = axb1.plot(t, Davg, 'b-')
-
-plt.show()
-
-
-
-
-
-
-diff_D = abs(np.diff(Davg, prepend=Davg[0]))
-
-diff_t = np.diff(tavg, prepend=tavg[0])
-
-
-Favg=np.array(Favg)
-tavg=np.array(tavg)
-mu = diff_D/diff_t
-idx = mu >= 1e-7
-mu = mu[idx]
-favg = Favg[idx]
-tavg = tavg[idx]
-
-muavg=np.nanmean(mu)
-print(muavg)
-
-
-
-####this section uses stokes law to calclulate viscosity######
-# Vraw=Favg/((pi_6)*(mu)*(Reff))
-
-# Vavg = Vraw.mean()
-# print(Vavg)
-# stdV=np.std(Vraw)
-# print(stdV)
-
-
-# i = len(Vraw)
-# lent=len(tavg)
-# Diff=lent-i
-# tavg=tavg[Diff:]
-
-# fig= plt.figure(figsize=(10,10))
-# ax1 = fig.add_subplot()
-# ax1.plot(tavg, Vraw, '--', color ='black', markerfacecolor = 'none', markeredgecolor = 'k' , markersize = 15)
-# plt.show()
-
-
-
-
-# fig= plt.figure(figsize=(10,10))
-# ax1 = fig.add_subplot()
-# ax1.plot(tavg, Vmavg, '--', color ='black', markerfacecolor = 'none', markeredgecolor = 'k' , markersize = 15)
-# ax2 = ax1.twinx()
-# ax2.plot(tavg, Favg)
-# plt.show()
-
-
-
-# mean = np.mean(Vraw, axis=0)
-# sd = np.std(Vraw, axis=0)
-
-# # final_list = [x for x in Vraw if (x > mean - 2 * sd)]
-# # final_list = [x for x in final_list if (x < mean + 2 * sd)]
-
-# Vconf = [x for x in Vraw if (x > mean - sd)]
-# Vconf = [x for x in Vconf if (x < mean + sd)]
-# print(Vconf)
-
-# Length = len(Vconf)
-###################################################################
-#######this section uses calibration procedure to calculate viscosity#################
-F_RPen = favg/mu
-print(F_RPen)
-
-
-lowf =[]
-medf =[]
-highf =[] 
-
-for val in F_RPen:
-    if val <= 2000:
-        lowf.append(float(val))
-        pd.DataFrame(lowf)
-    if val >= 2001 and val <=15000:
-        medf.append(float(val))
-        pd.DataFrame(medf)
-        #print(medf)  
-    if val >= 15001:
-        highf.append(float(val))
-        pd.DataFrame(highf)
-        #print(highf) 
-        
-        
-        #print("true") 
-lowf = pd.Series(lowf)
-#lowf = lowf
-low_VCPen= ((lowf*1.736)-432.49)
-#low_VCN19 =pd.DataFrame(low_VCN19)
-medf = pd.Series(medf)
-#medf = medf
-
-med_VCPen= ((medf*2.7504)-223.8)
-#med_VCN19 =pd.DataFrame(med_VCN19)
-highf = pd.Series(highf)
-#highf = highf
-high_VCPen= ((highf*1.8734)+33905)
-
-#VCPen = ([high_VCPen + low_VCPen + med_VCPen])
-VCPen = pd.concat([high_VCPen, low_VCPen, med_VCPen])
-#VCPen= (VCPen[0])
-print(VCPen)
-
-
-meancal = np.mean(VCPen, axis=0)
-sdcal = np.std(VCPen, axis=0)
-
-Vconfcal = [x for x in VCPen if (x > meancal - sdcal)]
-Vconfcal = [x for x in VCPen if (x < meancal + sdcal)]
-print(Vconfcal)
-
-Lengthcal = len(Vconfcal)
-
-Vmavgcal =moving_average(Vconfcal, window_size)
-
-Length_2cal = len(Vmavgcal)
-
-
-
-
-x2cal= list(range(0,Length_2cal))
-Dstart=D[0]
-Dend=D.iloc[-1]
-dis_tot = (Dstart-Dend)#/1000
-z= len(x2cal)
-zz= dis_tot/z
-
+############ Here we calculate the velocity as a derivative of displacement and time######
+def derivative_central(y, t):
+    """
+    Computes dy/dt based on central difference.
+
+    Parameters:
+    y : array-like
+        The dependent variable.
+    t : array-like
+        The independent variable.
+
+    Returns:
+    der : array-like
+        The derivative of y with respect to t.
+    """
+    der = np.empty_like(y)
+    der[1:-1] = (y[2:] - y[:-2]) / (t[2:] - t[:-2])
+    # Assume same derivative value for first and last element as the
+    # second, second last element, respectively
+    der[[0, -1]] = der[[1, -2]]
+    return der
+
+
+vel = -derivative_central(Davg,t )
+print(vel)
+
+####################################################
+
+#################Here we apply the calibration factors based on three ranges###################
+
+FOV_LOW = 2.0e3
+FOV_HIGH = 1.5e4
+
+# Calibration as listed in Table 1
+cal = {
+    'low': {'m': 1.736, 'b': -432.49},
+    'med': {'m': 2.7504, 'b': -223.8},
+    'high': {'m': 1.8734, 'b': 3.3905e4}
+}
+
+
+def eta(force, vel):
+    """Calculated viscosity from above calibration values.
+    Parameters
+    ----------
+    force
+    vel
+    """
+    visc = np.empty_like(force)
+    fov = force / vel
+    idx = fov < FOV_LOW
+    if np.any(idx):
+        calib = cal['low']
+        visc[idx] = calib['m'] * fov[idx] + calib['b']
+    idx = np.logical_and(fov >= FOV_LOW, fov <= FOV_HIGH)
+    if np.any(idx):
+        calib = cal['med']
+        visc[idx] = calib['m'] * fov[idx] + calib['b']
+    idx = fov > FOV_HIGH
+    if np.any(idx):
+        calib = cal['low']
+        visc[idx] = calib['m'] * fov[idx] + calib['b']
+    return visc
+
+
+cal_visc= eta(Favg, vel) #####this is now the raw calibrated viscosity 
+
+############################
+
+
+Lengthcal2 = len(cal_visc)
+print(Lengthcal2)
+
+Vmavgcal2 =moving_average(cal_visc, window_size)#########we smooth the calibrated viscosity here
+
+Length_2cal2 = len(cal_visc)
+print(Length_2cal2)
+
+
+#########this determines the depth of penetration#############
+x2cal2= list(range(0,Length_2cal2))
+print(x2cal2)
+Dstart2=D[0]
+print(Dstart2)
+Dend2=D.iloc[-1]
+dis_tot2 = (Dstart2-Dend2)#/1000
+print(dis_tot2)
+z2= len(x2cal2)
+print(z2)
+zz2= dis_tot2/z2
+print(zz2)
 
     
-xz= np.linspace(0,dis_tot,z)
+xz2= np.linspace(0,dis_tot2,z2)
 
 
-
-
-plt.plot(x2cal, Vmavgcal, 'o-', color ='black', markerfacecolor = 'none', markeredgecolor = 'k' , label= 'vcal_smooth')
+###########final plots############
+plt.plot(x2cal2, Vmavgcal2, 'o-', color ='green', markerfacecolor = 'none', markeredgecolor = 'k' , label= 'vcal_smooth')
 #plt.plot(xcal, Vconfcal, 'o-', color ='red', markerfacecolor = 'none', markeredgecolor = 'r' , label= 'vcal_raw')
 #plt.plot(x2, Vmavg, 'o-', color ='green', markerfacecolor = 'none', markeredgecolor = 'g' , label= 'Viscosity_smooth')
 #plt.plot(x, Vconf, 'o-', color ='blue', markerfacecolor = 'none', markeredgecolor = 'b' , label= 'Viscosity_raw')
@@ -331,11 +227,11 @@ plt.legend(loc="upper left")
 plt.ylabel('Viscosity Pas')
 plt.xlabel('data (n)')
   #label="Viscosity vs time ")
+
 plt.show()
 
-
 #plt.plot(x2cal, Vmavgcal, 'o-', color ='black', markerfacecolor = 'none', markeredgecolor = 'k' , label= 'vcal_smooth')
-plt.plot(x2cal, Vconfcal, 'o-', color ='red', markerfacecolor = 'none', markeredgecolor = 'r' , label= 'vcal_raw')
+plt.plot(x2cal2, cal_visc, 'o-', color ='orange', markerfacecolor = 'none', markeredgecolor = 'r' , label= 'vcal_raw')
 #plt.plot(x2, Vmavg, 'o-', color ='green', markerfacecolor = 'none', markeredgecolor = 'g' , label= 'Viscosity_smooth')
 #plt.plot(x, Vconf, 'o-', color ='blue', markerfacecolor = 'none', markeredgecolor = 'b' , label= 'Viscosity_raw')
 plt.legend(loc="upper left")
@@ -343,19 +239,19 @@ plt.ylabel('Viscosity Pas')
 plt.xlabel('data (n)')
 
 
+plt.show()
 
+
+plt.plot(xz2, Vmavgcal2, 'o-', color ='blue', markerfacecolor = 'none', markeredgecolor = 'k' , label= 'vcal_to_distance')
+plt.legend(loc="upper left")
+plt.ylabel('Viscosity Pas')
+plt.xlabel('lenght (m)')
 plt.show()
 
 
 
 ###export data into .txt files 
-np.savetxt("exported_cal_dat.txt", np.c_[x2cal, Vmavgcal, xz]), #thisT])
-np.savetxt("exporteds_stat_cal_dat.txt", np.c_[meancal, sdcal]), #thisT])
+np.savetxt("exported_cal_dat.txt", np.c_[x2cal2, Vmavgcal2, xz2])
 
 
-plt.plot(xz, Vmavgcal, 'o-', color ='black', markerfacecolor = 'none', markeredgecolor = 'k' , label= 'vcal_to_distance')
-plt.legend(loc="upper left")
-plt.ylabel('Viscosity Pas')
-plt.xlabel('lenght (m)')
-plt.show()
 
