@@ -1,4 +1,3 @@
-
 from tkinter import Tk
 from tkinter.filedialog import askdirectory
 Folder = askdirectory(title='Select Folder') # shows dialog box and return the path
@@ -30,29 +29,26 @@ name = os.path.basename(filename)
 filename = folder + '/' + name
 
 
-#read in data from .txt file
-columns = ['Time(s)', 'Force(N)', 'Distance_mm']
-data = pd.read_csv(filename, sep='\s+', usecols=columns)
-data.columns = ['Time(s)', 'Force(N)','Distance_mm',]
+#columns = ['Time(s)', 'Force(N)', 'Distance_mm']
+data = pd.read_csv(filename, sep='\s+')
+data.columns = ['Time(s)', 'Distance_mm','Force(N)']
 
 
 
 #data= pd.read_csv(p, usecols=columns, delim_whitespace=True)
 t = data['Time(s)'].values
 F = data['Force(N)'].values
-D = data['Distance_mm'].values / 1000
+D = data['Distance_mm'].values 
 
 
-name = name.replace("_log.txt", "")
+name = name.replace("_first_selected_dat.txt", "")
+
 
 
 fig = plt.figure(figsize=(10, 7))
 
 
 axa1 = fig.add_subplot(211)
-
-
-
 
 
 p1, = axa1.plot(t, F, 'r-')
@@ -67,7 +63,7 @@ axa1.tick_params(axis='y', color='red', labelcolor= 'red')
 
 axa2 = axa1.twinx()
 axa2.plot(t, D, 'g-')
-axa2.set_ylabel('Distance (mm)', color='green')
+axa2.set_ylabel('Distance (m)', color='green')
 axa2.grid(False)
 axa2.set_xlabel('time (s)', color='black')
 axa2.tick_params(axis='y', color='green', labelcolor= 'green')
@@ -76,11 +72,13 @@ axa2.spines.left.set_position(("axes", 1.08))
 
 
 
+
+
 axb = fig.add_subplot(212)
 axb.set_xlabel('time (s)', color='black')
 axb.set_ylabel('Force (N)', color='red')
 axb1 = axb.twinx()
-axb1.set_ylabel('Distance (mm)', color='green')
+axb1.set_ylabel('Distance (m)', color='green')
 axb1.grid(False)
 axb1.set_xlabel('time (s)', color='black')
 axb1.tick_params(axis='y', color='green', labelcolor= 'green')
@@ -108,11 +106,10 @@ def onselect(tmin, tmax):
 
     fig.canvas.draw_idle()
 
-    
-    np.savetxt(name+" _first_selected_dat.txt", np.c_[thist, thisD, thisF])
-    #np.savetxt(f"{folder}/name+ "first_selected_dat.txt", np.c_[cal_visc, Vmavgcal, depth3])
+    # save
+    np.savetxt(name+" _second_selected_dat.txt", np.c_[thist, thisD, thisF])
 
-
+# set useblit True on gtkagg for enhanced performance
 span = SpanSelector(axa2, onselect, 'horizontal', useblit=True,
                     rectprops=dict(alpha=0.5, facecolor='red'))
 
