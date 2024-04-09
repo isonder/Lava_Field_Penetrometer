@@ -10,7 +10,6 @@ sudo apt install python3-rpi.gpio
 
 # If things install without problems, register penetrometer in rc.local
 # Get the current working directory
-CWD=$(pwd)
 INSTALLDIR="/opt/lava_field_penetrometer"
 # Path to the code that needs to run at startup
 PENFILE="Penetrometer_execution_code.py"
