@@ -1,3 +1,9 @@
+***Under Construction***
+
+### Recommended Steps to Get Started
+
+1. ...
+2. ...
 
 Step1) enter the command below in Raspi terminal
 sudo nano /etc/rc.local
