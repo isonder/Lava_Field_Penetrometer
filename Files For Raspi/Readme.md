@@ -1,7 +1,6 @@
 <div style="color:#ff8585">
-***Under Construction***<br/>
-*At the moment these instructions will not work. We are working hard to change
-that.*
+<span style="font-weight: bold; font-style: italic;">Under Construction</span><br/>
+<span style="font-style: italic;">At the moment these instructions will not work. We are working hard to change that.</span>
 </div>
 
 ## Recommended Steps to Get Started
