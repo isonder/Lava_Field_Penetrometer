@@ -1,7 +1,8 @@
 &#x1F534;&#x1F534;&#x1F534; **_Under Construction_** &#x1F534;&#x1F534;&#x1F534;
 
-&#x1F534;&#x1F534;&#x1F534; At the moment these instructions will not work. We are working hard to change that.
-&#x1F534;&#x1F534;&#x1F534;
+&#x1F534;&#x1F534;
+At the moment these instructions will not work. We are working hard to change that.
+&#x1F534;&#x1F534;
 
 ## Recommended Steps to Get Started
 
