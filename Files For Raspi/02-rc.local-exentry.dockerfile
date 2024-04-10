@@ -11,7 +11,7 @@ ADD ["Penetrometer_execution_code.py", "."]
 # create rc.local and set the executable bit
 RUN touch /etc/rc.local
 RUN chmod +x /etc/rc.local
-RUN ["echo", "/opt/lava_field_penetrometer/Penetrometer_execution_code.py", ">>", "/etc/rc.local"]
+RUN echo /opt/lava_field_penetrometer/Penetrometer_execution_code.py >> /etc/rc.local
 # Set executable bit for the setup script
 RUN chmod +x setup.sh
 
