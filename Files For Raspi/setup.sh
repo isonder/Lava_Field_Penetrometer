@@ -16,4 +16,5 @@ PENFILE="Penetrometer_execution_code.py"
 
 sudo mkdir -p "${INSTALLDIR}"                   #
 sudo cp $PENFILE "${INSTALLDIR}/${PENFILE}"     # copy recorder file to install folder
-sudo python3 register_recorder.py "${PENFILE}"  # register recorder file for autostart
+# register recorder file for autostart
+sudo python3 register_recorder.py "${INSTALLDIR}/${PENFILE}"
