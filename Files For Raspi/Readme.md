@@ -1,13 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="10 0 200 20" fill="none">
-    <text x="12" y="15" fill="#ea4335">Under Construction</text>
-</svg><br/>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="10 0 400 20" fill="none">
-    <text x="12" y="15" fill="#ea4335">At the moment these instructions will not work.</text>
-</svg><br/>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="10 0 400 20" fill="none">
-    <text x="12" y="15" fill="#ea4335">We are working hard to change that.</text>
-</svg>
+&#x1F534;&#x1F534;&#x1F534; **_Under Construction_** &#x1F534;&#x1F534;&#x1F534;
 
+&#x1F534;&#x1F534;&#x1F534; At the moment these instructions will not work. We are working hard to change that.
+&#x1F534;&#x1F534;&#x1F534;
 
 ## Recommended Steps to Get Started
 
