@@ -1,7 +1,8 @@
-***Under Construction***
-
+<div style="color:#ff8585">
+***Under Construction***<br/>
 *At the moment these instructions will not work. We are working hard to change
 that.*
+</div>
 
 ## Recommended Steps to Get Started
 
