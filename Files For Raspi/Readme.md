@@ -1,7 +1,13 @@
-<div style="color:#ff8585">
-<span style="font-weight: bold; font-style: italic;">Under Construction</span><br/>
-<span style="font-style: italic;">At the moment these instructions will not work. We are working hard to change that.</span>
-</div>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="10 0 200 20" fill="none">
+    <text x="12" y="15" fill="#ea4335">Under Construction</text>
+</svg><br/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="10 0 400 20" fill="none">
+    <text x="12" y="15" fill="#ea4335">At the moment these instructions will not work.</text>
+</svg><br/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="10 0 400 20" fill="none">
+    <text x="12" y="15" fill="#ea4335">We are working hard to change that.</text>
+</svg>
+
 
 ## Recommended Steps to Get Started
 
