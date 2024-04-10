@@ -14,7 +14,9 @@ if user_id != 0:
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
-    "penrecorder", help="File to register to run at startup.")
+    "penrecorder",
+    help="File to register to run at startup. (Must be an absolute path.)"
+)
 
 args = parser.parse_args()
 recfile = Path(args.penrecorder).absolute()

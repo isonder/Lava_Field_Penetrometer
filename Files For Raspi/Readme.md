@@ -1,11 +1,36 @@
+***Under Construction***
 
-Step1) enter the command below in Raspi terminal
-sudo nano /etc/rc.local
+*At the moment these instructions will not work. We are working hard to change
+that.*
 
-Step2)
-#add this command to file above exit(0)
-python3 "adjust your directory to your find the desired script" # need to adjust to whatever file name is
+## Recommended Steps to Get Started
 
-Step 3)
-#run this command below and then reboot
-sudo chmod +x /etc/rc.local
+To get the penetrometer recorder script running after boot its filename needs to
+be added to `/etc/rc.local`, and `rc.loca`'s executable bit has to be set, if
+necessary.
+
+The provided setup script installs the recorder file in `/opt/lava_vield_penetrometer/`.
+This could be also pretty much any arbitrary folder on the system.  
+- [ ] TODO: Check that data folder in recorder script is something reasonable,
+  probably the pi home folder.
+
+1. Connect the Raspberry Pi to the network.
+2. Check if `git` ([`git-scm.org`](https://git-scm.org)) is installed.
+   ```bash
+   git --version
+   ```
+   If there is some error message, or complaining about unknown command, git needs
+   to be installed.
+   ```bash
+   apt install git
+   ```
+3. Clone this repository somewhere on the Raspberry Pi
+   ```bash
+   git clone https://github.com/LAVAPUBMH/Lava_Field_Penetrometer.git
+   ```
+4. Change into the folder that contains all RaspberryPi related files and run
+   the setup script:
+   ```bash
+   cd "Lava_Field_Penetrometer/Files For Raspi/"
+   ./setup.sh
+   ```
