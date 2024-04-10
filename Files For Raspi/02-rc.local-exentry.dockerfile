@@ -2,7 +2,7 @@
 
 FROM lfp_tmpl00:latest
 
-WORKDIR /opt/lava_field_penetrometer
+WORKDIR /src
 # Copy necessary files into container image
 ADD ["register_recorder.py", "."]
 ADD ["setup.sh", "."]
